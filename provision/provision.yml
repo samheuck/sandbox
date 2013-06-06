@@ -1,0 +1,64 @@
+---
+- hosts: sandbox
+  user: vagrant
+  sudo: True
+  gather_facts: no
+
+  tasks:
+    - name: git completion
+      copy: src=files/git-completion.sh dest=/etc/profile.d/git-completion.sh mode=644
+
+    - name: bash prompt
+      copy: src=files/prompt.sh dest=/etc/profile.d/prompt.sh mode=644 force=no
+
+    - name: bash aliases
+      copy: src=files/aliases.sh dest=/etc/profile.d/aliases.sh mode=644 force=no
+
+    - name: remove user profile
+      file: path=.profile state=absent
+
+    - name: remove user bashrc
+      file: path=.bashrc state=absent
+
+    - name: update apt-get
+      apt: update-cache=yes
+
+    - name: install packages
+      apt: pkg=$item state=installed
+      with_items:
+        - apache2
+        - curl
+        - dnsutils
+        - default-jre
+        - emacs
+        - git
+        - libapache2-mod-wsgi
+        - links
+        - nmap
+        - python
+        - python-cairo
+        - python-imaging
+        - python-django
+        - python-django-tagging
+        - python-docutils
+        - python-pysqlite2
+        - python-setuptools
+        - python-textile
+        - python-twisted
+        - unzip
+        - vim
+        - zip
+
+    - name: python | install pip
+      easy_install: name=pip
+
+    - name: graphite | install packages
+      pip: name=$item state=present
+      with_items:
+        - simplejson
+        - whisper
+        - carbon
+        - graphite-web
+
+    - name: graphite | local settings
+      copy: src=files/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py mode=644 force=no
