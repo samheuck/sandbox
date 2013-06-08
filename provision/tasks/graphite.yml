@@ -41,16 +41,37 @@
       - graphite-web
 
   - name: graphite | local settings
-    copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py mode=644 force=no
+    copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py force=no
+
+  - name: graphite | config files
+    copy: src=files/graphite/$item dest=/opt/graphite/conf force=no
+    with_items:
+      - carbon.conf
+      - dashboard.conf
+      - graphite.wsgi
+      - storage-schemas.conf
+
+  - name: set permissions
+    file: path=/opt/graphite owner=root group=www-data mode=775 state=directory recurse=yes
 
   - name: create mysql database for graphite
     mysql_db: name=graphite
 
   - name: create mysql user for graphite
-    mysql_user: name=graphite
+    mysql_user: name=graphite password=graphite
+
+  - name: create apache run dir
+    file: path=/etc/apache2/run state=directory
 
   - name: create vhost
     copy: src=files/graphite/vhost dest=/etc/apache2/sites-available/graphite mode=644
 
+  - name: wsgi config
+    copy: src=files/graphite/wsgi.conf dest=/etc/apache2/mods-available/wsgi.conf mode=644
+
   - name: enable vhost
     command: a2ensite graphite
+
+  - name: restart apache
+    command: apachectl restart
+
