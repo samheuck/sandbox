@@ -140,7 +140,7 @@ DEBUG = True
 # specification as the old database specification style is removed in 1.4
 DATABASES = {
     'default': {
-        'NAME': '/opt/graphite/storage/graphite.db',
+        'NAME': 'graphite',
         'ENGINE': 'django.db.backends.mysql',
         'USER': 'graphite',
         'PASSWORD': 'graphite',

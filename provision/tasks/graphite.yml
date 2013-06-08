@@ -41,7 +41,7 @@
       - graphite-web
 
   - name: graphite | local settings
-    copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py force=no
+    copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py
 
   - name: graphite | config files
     copy: src=files/graphite/$item dest=/opt/graphite/conf/$item
@@ -58,7 +58,7 @@
     mysql_db: name=graphite
 
   - name: create mysql user for graphite
-    mysql_user: name=graphite password=graphite
+    mysql_user: name=graphite password=graphite priv=graphite.*:ALL
 
   - name: create apache run dir
     file: path=/etc/apache2/run state=directory
@@ -68,6 +68,9 @@
 
   - name: wsgi config
     copy: src=files/graphite/wsgi.conf dest=/etc/apache2/mods-available/wsgi.conf mode=644
+
+  - name: disable default vhost
+    command: a2dissite default
 
   - name: enable vhost
     command: a2ensite graphite
