@@ -44,7 +44,7 @@
     copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py force=no
 
   - name: graphite | config files
-    copy: src=files/graphite/$item dest=/opt/graphite/conf force=no
+    copy: src=files/graphite/$item dest=/opt/graphite/conf/$item
     with_items:
       - carbon.conf
       - dashboard.conf
