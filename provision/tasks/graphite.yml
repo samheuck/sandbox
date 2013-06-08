@@ -24,7 +24,7 @@
   - name: virtualenv | create virtualenv for graphite
     command: virtualenv --no-site-packages /opt/graphite creates=/opt/graphite/bin/activate
 
-  python-cairo cannot be installed into a virtualenv
+  #python-cairo cannot be installed into a virtualenv
   - name: link python cairo into env
     file: path=/opt/graphite/lib/python2.7/site-packages/cairo src=/usr/lib/python2.7/dist-packages/cairo state=link
 
