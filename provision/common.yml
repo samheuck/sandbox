@@ -1,0 +1,18 @@
+---
+  - name: git completion
+    copy: src=files/git-completion.sh dest=/etc/profile.d/git-completion.sh mode=644
+
+  - name: bash prompt
+    copy: src=files/prompt.sh dest=/etc/profile.d/prompt.sh mode=644 force=no
+
+  - name: bash aliases
+    copy: src=files/aliases.sh dest=/etc/profile.d/aliases.sh mode=644 force=no
+
+  - name: remove user profile
+    file: path=.profile state=absent
+
+  - name: remove user bashrc
+    file: path=.bashrc state=absent
+
+  - name: update apt-get
+    apt: update-cache=yes

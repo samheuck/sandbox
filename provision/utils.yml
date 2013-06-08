@@ -1,0 +1,12 @@
+---
+- name: install utilities
+  apt: name=$item state=present
+  with_items:
+    - curl
+    - dnsutils
+    - emacs
+    - links
+    - nmap
+    - unzip
+    - vim
+    - zip
