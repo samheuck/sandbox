@@ -34,7 +34,7 @@ WSGISocketPrefix run/wsgi
 
         # XXX You will need to create this file! There is a graphite.wsgi.example
         # file in this directory that you can safely use, just copy it to graphite.wgsi
-        WSGIScriptAlias / /opt/graphite/conf/graphite.wsgi 
+        WSGIScriptAlias / /opt/graphite/conf/graphite.wsgi
 
         Alias /content/ /opt/graphite/webapp/content/
         <Location "/content/">

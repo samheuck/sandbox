@@ -21,9 +21,13 @@
   - name: pip | install virtualenv module
     pip: name=virtualenv state=present
 
-  - name: virtualenv | create virtualenv
-    command: virtualenv /opt/graphite creates=/opt/graphite/bin/activate
+  - name: virtualenv | create baseline env for mod_wsgi
+    command: virtualenv --no-site-packages /usr/local/wsgienv creates=/usr/local/wsgienv
 
+  - name: virtualenv | create virtualenv for graphite
+    command: virtualenv --no-site-packages /opt/graphite creates=/opt/graphite/bin/activate
+
+  # python-cairo cannot be installed into a virtualenv
   - name: link python cairo into env
     file: path=/opt/graphite/lib/python2.7/site-packages/cairo src=/usr/lib/python2.7/dist-packages/cairo state=link
 
@@ -45,7 +49,7 @@
     copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py
 
   - name: graphite | config files
-    copy: src=files/graphite/$item dest=/opt/graphite/conf/$item
+    copy: src=files/graphite/conf/$item dest=/opt/graphite/conf/$item
     with_items:
       - carbon.conf
       - dashboard.conf
