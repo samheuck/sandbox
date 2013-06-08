@@ -16,6 +16,7 @@
       - python-mysqldb
       - python-pip
       - python-setuptools
+      - python-software-properties
 
   - name: pip | install virtualenv module
     pip: name=virtualenv state=present
@@ -51,6 +52,12 @@
       - graphite.wsgi
       - storage-schemas.conf
 
+  - name: init for carbon-cache
+    copy: src=files/graphite/carbon-cache.upstart dest=/etc/init/carbon-cache.conf mode=644
+
+  - name: start carbon-cache
+    service: name=carbon-cache state=started
+
   - name: set permissions
     file: path=/opt/graphite owner=root group=www-data mode=775 state=directory recurse=yes
 
@@ -77,4 +84,3 @@
 
   - name: restart apache
     command: apachectl restart
-
