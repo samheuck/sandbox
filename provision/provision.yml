@@ -5,47 +5,6 @@
   gather_facts: no
 
   tasks:
-    - include: common.yml
-    - include: utils.yml
-
-    - name: install packages
-      apt: pkg=$item state=present
-      with_items:
-        - apache2
-        - libapache2-mod-wsgi
-        - libcairo2-dev
-        - libmysqlclient-dev
-        - mysql-client
-        - mysql-server
-        - memcached
-        - openjdk-7-jdk
-        - python
-        - python-cairo-dev
-        - python-dev
-        - python-pip
-        - python-setuptools
-
-    - name: pip install virtualenv
-      pip: name=virtualenv state=present
-
-    - name: create virtualenv
-      command: virtualenv /opt/graphite creates=/opt/graphite/bin/activate
-
-    - name: link python cairo
-      file: path=/opt/graphite/lib/python2.7/site-packages/cairo src=/usr/lib/python2.7/dist-packages/cairo state=link
-
-    - name: graphite | install packages
-      pip: name=$item state=present virtualenv=/opt/graphite
-      with_items:
-        - carbon
-        - django
-        - django-tagging
-        - MySQL-python
-        - python-memcached
-#        - python-rrdtool
-#        - python-txAMQP
-        - Twisted
-        - whisper
-        - graphite-web
-    - name: graphite | local settings
-      copy: src=files/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py mode=644 force=no
+    - include: tasks/common.yml
+    - include: tasks/utils.yml
+    - include: tasks/graphite.yml

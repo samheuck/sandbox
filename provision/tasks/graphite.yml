@@ -1,0 +1,56 @@
+---
+  - name: graphite | install system packages
+    apt: pkg=$item state=present
+    with_items:
+      - apache2
+      - libapache2-mod-wsgi
+      - libcairo2-dev
+      - libmysqlclient-dev
+      - mysql-client
+      - mysql-server
+      - memcached
+      - openjdk-7-jdk
+      - python
+      - python-cairo-dev
+      - python-dev
+      - python-mysqldb
+      - python-pip
+      - python-setuptools
+
+  - name: pip | install virtualenv module
+    pip: name=virtualenv state=present
+
+  - name: virtualenv | create virtualenv
+    command: virtualenv /opt/graphite creates=/opt/graphite/bin/activate
+
+  - name: link python cairo into env
+    file: path=/opt/graphite/lib/python2.7/site-packages/cairo src=/usr/lib/python2.7/dist-packages/cairo state=link
+
+  - name: install django
+    pip: name=django version=1.4 virtualenv=/opt/graphite state=present
+
+  - name: graphite | install dependencies
+    pip: name=$item state=present virtualenv=/opt/graphite
+    with_items:
+      - carbon
+      - django-tagging
+      - MySQL-python
+      - python-memcached
+      - Twisted
+      - whisper
+      - graphite-web
+
+  - name: graphite | local settings
+    copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py mode=644 force=no
+
+  - name: create mysql database for graphite
+    mysql_db: name=graphite
+
+  - name: create mysql user for graphite
+    mysql_user: name=graphite
+
+  - name: create vhost
+    copy: src=files/graphite/vhost dest=/etc/apache2/sites-available/graphite mode=644
+
+  - name: enable vhost
+    command: a2ensite graphite

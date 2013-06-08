@@ -141,11 +141,11 @@ DEBUG = True
 DATABASES = {
     'default': {
         'NAME': '/opt/graphite/storage/graphite.db',
-        'ENGINE': 'django.db.backends.sqlite3'
-#        'USER': '',
-#        'PASSWORD': '',
-#        'HOST': '',
-#        'PORT': ''
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'graphite',
+        'PASSWORD': 'graphite',
+        'HOST': 'localhost',
+        'PORT': ''
     }
 }
 #
