@@ -31,7 +31,7 @@
   - name: install django
     pip: name=django version=1.4 virtualenv=/opt/graphite state=present
 
-  - name: graphite | install dependencies
+  - name: graphite | install packages
     pip: name=$item state=present virtualenv=/opt/graphite
     with_items:
       - carbon
@@ -42,7 +42,7 @@
       - whisper
       - graphite-web
 
-  - name: graphite | local settings
+  - name: graphite | settings
     copy: src=files/graphite/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py
 
   - name: graphite | config files
@@ -56,35 +56,35 @@
   - name: init for carbon-cache
     copy: src=files/graphite/carbon-cache.upstart dest=/etc/init/carbon-cache.conf mode=644
 
-  - name: set permissions
+  - name: graphite | set permissions
     file: path=/opt/graphite owner=root group=www-data mode=775 state=directory recurse=yes
 
-  - name: create mysql database for graphite
+  - name: graphite | create mysql database
     mysql_db: name=graphite
 
-  - name: create mysql user for graphite
+  - name: graphite | create mysql user
     mysql_user: name=graphite password=graphite priv=graphite.*:ALL
 
-  - name: create apache run dir
+  - name: create apache run dir for wsgi socket
     file: path=/etc/apache2/run state=directory
 
-  - name: copy over initial django fixture
+  - name: django | initial data
     copy: src=files/graphite/django.json dest=/opt/graphite/webapp/graphite/initial_data.json
 
-  - name: django syncdb
+  - name: django | syncdb
     django_manage: >
       command=syncdb
       virtualenv=/opt/graphite
       app_path=/opt/graphite/webapp/graphite
 
-  - name: remove initial django data
+  - name: django | remove initial data
     file: path=/opt/graphite/webapp/graphite/initial_data.json state=absent
-
-  - name: create vhost
-    copy: src=files/graphite/vhost dest=/etc/apache2/sites-available/graphite mode=644
 
   - name: disable default vhost
     command: a2dissite default
+
+  - name: create vhost
+    copy: src=files/graphite/vhost dest=/etc/apache2/sites-available/graphite mode=644
 
   - name: enable vhost
     command: a2ensite graphite
